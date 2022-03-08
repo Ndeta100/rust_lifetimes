@@ -16,18 +16,37 @@ impl<'a, T> Iterator for MyIterWrapper<'a, T> {
         element
     }
 }
+struct MyMutableIterator<'a, T> {
+    slice: &'a mut [T],
+}
+impl<'a, T> Iterator for MyMutableIterator<'a, T> {
+    type Item = &'a mut T;
+    fn next(&mut self) -> Option<Self::Item> {
+        todo!()
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn it_works() {
-        let mut collection = vec![1, 2, 3, 4];
+        let collection = vec![1, 2, 3, 4];
         let wrapper = MyIterWrapper {
             slice: &collection[..],
         };
         for (index, elem) in wrapper.enumerate() {
             assert_eq!(*elem, collection[index]);
         }
+
+        //for mutable iterator
+        let mut collection = vec![1, 2, 3, 4];
+        let wrapper = MyMutableIterator {
+            slice: &mut collection[..],
+        };
+        for (index, elem) in wrapper.enumerate() {
+            *elem = *elem + 1;
+        }
+        assert_eq!(collection.get(0), Some(&2));
     }
 }
